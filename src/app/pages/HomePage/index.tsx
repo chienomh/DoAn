@@ -1,25 +1,22 @@
+import '@splidejs/splide/dist/css/splide.min.css';
+import LayoutShop from 'app/components/ShopLayout';
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
-import { NavBar } from 'app/components/NavBar';
-import { Masthead } from './Masthead';
-import { Features } from './Features';
-import { PageWrapper } from 'app/components/PageWrapper';
+import BestSale from './components/bestSellers';
+import Middle from './components/middle/index';
+import SlideShow from './components/sliderShow';
 
 export function HomePage() {
   return (
     <>
       <Helmet>
-        <title>Home Page</title>
-        <meta
-          name="description"
-          content="A React Boilerplate application homepage"
-        />
+        <title>Trang chủ</title>
       </Helmet>
-      <NavBar />
-      <PageWrapper>
-        <Masthead />
-        <Features />
-      </PageWrapper>
+      <LayoutShop>
+        <SlideShow />
+        <Middle />
+        <BestSale />
+      </LayoutShop>
     </>
   );
 }
