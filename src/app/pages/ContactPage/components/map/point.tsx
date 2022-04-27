@@ -9,8 +9,8 @@ import { ReactComponent as MapMarker } from './assets/mapMarker.svg';
 
 const MyMarker = (props: any) => {
   return (
-    <Box>
-      <Points style={{ cursor: 'pointer', transform: 'translateY(-24px)' }} />
+    <Box position="absolute">
+      <Points style={{ cursor: 'pointer' }} />
     </Box>
   );
 };

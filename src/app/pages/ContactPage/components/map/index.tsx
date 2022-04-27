@@ -8,6 +8,7 @@ import {
   Marker,
 } from 'react-google-maps';
 import MyMarker from './point';
+import { Box } from '@mui/system';
 
 export const MyMapComponent = compose(
   withProps({
@@ -16,7 +17,7 @@ export const MyMapComponent = compose(
       'https://maps.googleapis.com/maps/api/js?key=AIzaSyD3gGoFG-bKYMimxS30UKsA99OlWsn9FEY',
     loadingElement: <div style={{ height: `100%` }} />,
     containerElement: <div style={{ height: `100%` }} />,
-    mapElement: <div style={{ height: `100%` }} />,
+    mapElement: <div style={{ height: `100%`, position: 'relative' }} />,
   }),
   withScriptjs,
   withGoogleMap,
@@ -24,14 +25,7 @@ export const MyMapComponent = compose(
   <GoogleMap
     defaultZoom={15}
     defaultCenter={{ lat: 21.031728910421187, lng: 105.78710004183252 }}
-    // yesIWantToUseGoogleMapApiInternals
-    // defaultZoom={15}
   >
-    ,
-    {props.isMarkerShown && (
-      // <Marker position={{ lat: 21.031728910421187, lng: 105.78710004183252 }} />
-      <MyMarker lat={21.031728910421187} lng={105.78710004183252} />
-    )}
     <MyMarker lat={21.031728910421187} lng={105.78710004183252} />
   </GoogleMap>
 ));
