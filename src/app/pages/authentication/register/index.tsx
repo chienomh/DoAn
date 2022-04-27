@@ -22,6 +22,10 @@ export default function RegisterForm() {
       .required('This field is is required')
       .typeError('This field must be number'),
     username: yup.string().required('This field is is required'),
+    email: yup
+      .string()
+      .email('This is email')
+      .required('This field is is required'),
     password: yup.string().required('This field is is required'),
     phone: yup.string().required('This field is is required'),
     address: yup.string().required('This field is is required'),
@@ -36,6 +40,7 @@ export default function RegisterForm() {
       password: '',
       phone: '',
       address: '',
+      email: '',
     },
     mode: 'all',
   });
@@ -54,12 +59,12 @@ export default function RegisterForm() {
     const params = {
       name: getValues('name'),
       age: 18,
-      roles: ['ROLE_USER'],
       username: getValues('username'),
       password: getValues('password'),
       address: getValues('address'),
-      gender: 'Woment',
+      gender: 'Nam',
       phone: getValues('phone'),
+      email: getValues('email'),
     };
     dispatch(actions.register(params));
   };
@@ -101,6 +106,10 @@ export default function RegisterForm() {
                   type="number"
                 />
               </Box>
+            </Box>
+            <Box sx={{ marginBottom: '20px' }}>
+              <Label>Email</Label>
+              <ShopField form={form} name="email" errorText={true} />
             </Box>
             <Box sx={{ marginBottom: '20px' }}>
               <Label>User Name</Label>

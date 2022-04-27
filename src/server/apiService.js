@@ -5,23 +5,23 @@ import config from './config';
 const apiClient = axios.create(config.api);
 
 // Request interceptor
-apiClient.interceptors.request.use(
-  config => {
-    const accessToken = localStorage.getItem('access_token');
+// apiClient.interceptors.request.use(
+//   config => {
+//     const accessToken = localStorage.getItem('access_token');
 
-    if (accessToken) {
-      config.headers.common.Authorization = `Bearer ${accessToken}`;
-    }
+//     if (accessToken) {
+//       config.headers.common.Authorization = `Bearer ${accessToken}`;
+//     }
 
-    config.headers.common['Content-Type'] = 'application/json';
-    config.headers.common['Accept'] = 'application/json';
+//     config.headers.common['Content-Type'] = 'application/json';
+//     config.headers.common['Accept'] = 'application/json';
 
-    return config;
-  },
-  error => {
-    return Promise.reject(error);
-  },
-);
+//     return config;
+//   },
+//   error => {
+//     return Promise.reject(error);
+//   },
+// );
 
 // // Response interceptor
 // apiClient.interceptors.response.use(

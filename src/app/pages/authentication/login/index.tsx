@@ -8,19 +8,37 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Label } from 'app/pages/ContactPage/components/GetInTouch/styled';
 import ShopButton from 'app/components/ShopButton';
+import { loginAPI } from 'server/register';
+import { useHistory } from 'react-router-dom';
 
 export default function LoginForm() {
   const schema = yup.object({
-    name: yup.string().required('this field is is required'),
+    username: yup.string().required('this field is is required'),
+    password: yup.string().required('this field is is required'),
   });
 
   const form = useForm({
     resolver: yupResolver(schema),
-    defaultValues: {},
+    defaultValues: {
+      username: '',
+      password: '',
+    },
     mode: 'all',
   });
 
-  const handleLogin = () => {};
+  const { getValues, setValue } = form;
+
+  const history = useHistory();
+
+  const handleLogin = async () => {
+    const params = {
+      username: getValues('username'),
+      password: getValues('password'),
+    };
+
+    const data = await loginAPI(params);
+    history.push('/');
+  };
   return (
     <LayoutShop>
       <Container
@@ -40,11 +58,11 @@ export default function LoginForm() {
           >
             <Box sx={{ marginBottom: '20px' }}>
               <Label>User Name</Label>
-              <ShopField form={form} name="name" />
+              <ShopField form={form} name="username" />
             </Box>
             <Box sx={{ marginBottom: '20px' }}>
               <Label>Password</Label>
-              <ShopField form={form} name="name" type="password" />
+              <ShopField form={form} name="password" type="password" />
             </Box>
             <ShopButton text="Login" sx={{ width: '100%' }} type="submit" />
           </Box>
