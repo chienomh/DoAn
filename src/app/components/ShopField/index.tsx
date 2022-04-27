@@ -1,7 +1,10 @@
-import { InputAdornment } from '@mui/material';
+import { IconButton, InputAdornment } from '@mui/material';
 import React, { useState } from 'react';
 import { Controller, UseFormReturn, FieldValues, Path } from 'react-hook-form';
 import TextField from '@mui/material/TextField';
+import { Icon } from '@iconify/react';
+import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
 interface Cyper8InputFieldProps {
   placeholder?: string;
@@ -21,6 +24,8 @@ interface Cyper8InputFieldProps {
 }
 
 export function ShopField(props: Cyper8InputFieldProps) {
+  const [showPassword, setShowPassword] = useState(false);
+
   const { control } = props.form;
   const {
     formState: { errors },
@@ -63,12 +68,27 @@ export function ShopField(props: Cyper8InputFieldProps) {
             placeholder={props.placeholder}
             variant="outlined"
             disabled={props.disable ? props.disable : false}
-            type={props.type}
+            type={!showPassword ? props.type : 'text'}
             multiline={props.isMultiline ? true : false}
             rows={props.isMultiline ? 3 : 0}
             value={props.value === 0 ? '' : props.value}
             id={props.id}
-            inputProps={{ accept: props.accept }}
+            InputProps={{
+              endAdornment: props.type === 'password' && (
+                <InputAdornment position="end">
+                  <IconButton
+                    edge="end"
+                    onClick={() => setShowPassword(prev => !prev)}
+                  >
+                    {showPassword ? (
+                      <RemoveRedEyeIcon />
+                    ) : (
+                      <VisibilityOffIcon />
+                    )}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
         )}
       />

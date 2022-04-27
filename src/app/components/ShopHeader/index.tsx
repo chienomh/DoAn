@@ -1,19 +1,16 @@
-import React from 'react';
-import Box from '@mui/material/Box';
-import logo from './assets/logoShop.png';
-import { Button, Tab, Tabs, TextField } from '@mui/material';
-import ShopButton from '../ShopButton';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import SearchIcon from '@mui/icons-material/Search';
-import styled, { keyframes } from 'styled-components';
+import { Tab, Tabs, TextField } from '@mui/material';
+import Box from '@mui/material/Box';
+import React from 'react';
 import { useHistory } from 'react-router-dom';
-import TabPanel from '@mui/lab/TabPanel';
+import styled, { keyframes } from 'styled-components';
+import ShopButton from '../ShopButton';
+import logo from './assets/logoShop.png';
 
 export default function HeaderShop() {
   const history = useHistory();
-  console.log(history.location.pathname);
 
-  let path = history.location.pathname;
+  let path = history.location.pathname ? history.location.pathname : '';
 
   let valueParam;
 
@@ -22,12 +19,8 @@ export default function HeaderShop() {
       valueParam = '1';
       break;
     }
-    case '/men': {
+    case '/products': {
       valueParam = '2';
-      break;
-    }
-    case '/women': {
-      valueParam = '3';
       break;
     }
     case '/about': {
@@ -50,11 +43,7 @@ export default function HeaderShop() {
         break;
       }
       case '2': {
-        history.push('/men');
-        break;
-      }
-      case '3': {
-        history.push('/women');
+        history.push('/products');
         break;
       }
       case '4': {
@@ -67,6 +56,14 @@ export default function HeaderShop() {
       }
     }
   };
+
+  const handleGoLogin = () => {
+    history.push('/login');
+  };
+
+  const handleGoRegister = () => {
+    history.push('/register');
+  };
   return (
     <Box>
       <Box
@@ -78,7 +75,7 @@ export default function HeaderShop() {
         <img src={logo} alt="this is logo shop" width="150px" />
         <Box position="absolute" right="100px">
           <TextField
-            placeholder="search"
+            placeholder="Product's name"
             sx={{
               '>div': { borderRadius: '20px', padding: '0px', height: '47px' },
               width: '500px',
@@ -107,13 +104,27 @@ export default function HeaderShop() {
           aria-label="secondary tabs example"
         >
           <Tab value="1" label="HOME" />
-          <Tab value="2" label="MEN" />
-          <Tab value="3" label="WOMEN" />
+          <Tab value="2" label="PRODUCTS" />
           <Tab value="4" label="ABOUT" />
           <Tab value="5" label="CONTACT" />
         </Tabs>
-        <Box position="absolute" right="100px" sx={{ cursor: 'pointer' }}>
-          <ShoppingCartIcon /> CART [0]
+        <Box
+          position="absolute"
+          right="100px"
+          sx={{ cursor: 'pointer' }}
+          display="flex"
+          gap="50px"
+          marginBottom="5px"
+        >
+          <Box display="flex" alignItems="center">
+            <ShoppingCartIcon /> CART [0]
+          </Box>
+          {path === '/register' && (
+            <ShopButton text="Đăng nhập" handleClick={handleGoLogin} />
+          )}
+          {path === '/login' && (
+            <ShopButton text="Đăng ký" handleClick={handleGoRegister} />
+          )}
         </Box>
       </Box>
       <Box

@@ -7,6 +7,8 @@ interface IButton {
   isLoading?: boolean;
   isDisabled?: boolean;
   type?: string;
+  sx?: any;
+  handleClick?: any;
 }
 
 export default function ShopButton(props: IButton) {
@@ -14,13 +16,16 @@ export default function ShopButton(props: IButton) {
     <>
       <Button
         disabled={props.isDisabled}
+        variant="contained"
         sx={{
+          ...props.sx,
           borderRadius: '20px',
           padding: '10px 30px',
           fontFamily: 'cursive',
+          bgcolor: 'lightblue',
         }}
-        variant="contained"
-        color="secondary"
+        onClick={props.handleClick}
+        type="submit"
       >
         {props.isLoading ? <CircularProgress size="20" /> : props.text}
       </Button>

@@ -19,6 +19,8 @@ import MenPage from './pages/MenPage';
 import WomenPage from './pages/WomenPage';
 import AboutShop from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
+import LoginForm from './pages/authentication/login';
+import RegisterForm from './pages/authentication/register';
 
 export function App() {
   const { i18n } = useTranslation();
@@ -32,10 +34,12 @@ export function App() {
 
       <Switch>
         <Route exact path="/" component={HomePage} />
-        <Route exact path="/men" component={MenPage} />
-        <Route exact path="/women" component={WomenPage} />
+        <Route exact path="/products" component={MenPage} />
         <Route exact path="/about" component={AboutShop} />
         <Route exact path="/contact" component={ContactPage} />
+        <Route exact path="/login" component={LoginForm} />
+        <Route exact path="/login" component={LoginForm} />
+        <Route exact path="/register" component={RegisterForm} />
         <Route component={NotFoundPage} />
       </Switch>
       <GlobalStyle />
