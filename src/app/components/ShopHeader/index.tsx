@@ -1,11 +1,20 @@
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import { Tab, Tabs, TextField } from '@mui/material';
+import { Button, Menu, MenuItem, Tab, Tabs, TextField } from '@mui/material';
 import Box from '@mui/material/Box';
-import React from 'react';
+import { useSlice } from 'app/pages/authentication/slice';
+import { selectAuthent } from 'app/pages/authentication/slice/selectors';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
+import { getDetailUser } from 'server/register';
 import styled, { keyframes } from 'styled-components';
 import ShopButton from '../ShopButton';
 import logo from './assets/logoShop.png';
+import Avatart from './assets/avatar.jpg';
+import LogoutIcon from '@mui/icons-material/Logout';
+import PermIdentityIcon from '@mui/icons-material/PermIdentity';
+import SettingsIcon from '@mui/icons-material/Settings';
+import { selectDetailProduct } from 'app/pages/DetailProduct/slice/selectors';
 
 export default function HeaderShop() {
   const history = useHistory();
@@ -35,6 +44,19 @@ export default function HeaderShop() {
 
   const [value, setValue] = React.useState(valueParam);
 
+  const [user, setUser] = React.useState<any>();
+
+  const [totalCard, setTotalCard] = React.useState<number>(0);
+
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = event => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
     switch (newValue) {
@@ -63,6 +85,38 @@ export default function HeaderShop() {
 
   const handleGoRegister = () => {
     history.push('/register');
+  };
+
+  const dispatch = useDispatch();
+  const { actions } = useSlice();
+
+  const userId = localStorage.getItem('userId');
+  useEffect(() => {
+    (async () => {
+      const data = await getDetailUser(userId);
+      dispatch(actions.setDataUser(data.data));
+      setUser(data.data);
+    })();
+  }, [userId]);
+
+  const handleLogout = () => {
+    localStorage.removeItem('userId');
+    setUser('');
+  };
+
+  const total = useSelector(selectDetailProduct).card;
+
+  useEffect(() => {
+    const card = localStorage.getItem('card');
+    if (card) {
+      setTotalCard(
+        JSON.parse(localStorage.getItem('card') || '').length || '0',
+      );
+    } else setTotalCard(0);
+  }, [total]);
+
+  const goCard = () => {
+    history.push('/card');
   };
   return (
     <Box>
@@ -115,15 +169,56 @@ export default function HeaderShop() {
           display="flex"
           gap="50px"
           marginBottom="5px"
+          alignItems="center"
         >
-          <Box display="flex" alignItems="center">
-            <ShoppingCartIcon /> CART [0]
-          </Box>
-          {path === '/register' && (
+          {userId && (
+            <Box display="flex" alignItems="center" onClick={goCard}>
+              <ShoppingCartIcon /> CART [{totalCard}]
+            </Box>
+          )}
+
+          {!user && path !== '/login' && (
             <ShopButton text="Đăng nhập" handleClick={handleGoLogin} />
           )}
-          {path === '/login' && (
+          {!user && path !== '/register' && (
             <ShopButton text="Đăng ký" handleClick={handleGoRegister} />
+          )}
+          {user && (
+            <div>
+              <img
+                src={Avatart}
+                alt="hihih"
+                onClick={handleClick}
+                width="32px"
+                style={{ borderRadius: '100%' }}
+              />{' '}
+              Hi, {user.name}
+              <Menu
+                id="basic-menu"
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                MenuListProps={{
+                  'aria-labelledby': 'basic-button',
+                }}
+              >
+                <MenuItem onClick={handleClose}>
+                  {' '}
+                  <PermIdentityIcon sx={{ marginRight: '5px' }} />
+                  Profile
+                </MenuItem>
+                <MenuItem onClick={handleClose}>
+                  {' '}
+                  <SettingsIcon sx={{ marginRight: '5px' }} />
+                  Change Password
+                </MenuItem>
+                <MenuItem onClick={handleLogout}>
+                  {' '}
+                  <LogoutIcon sx={{ marginRight: '5px' }} />
+                  Logout
+                </MenuItem>
+              </Menu>
+            </div>
           )}
         </Box>
       </Box>

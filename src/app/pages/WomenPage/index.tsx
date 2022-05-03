@@ -28,14 +28,14 @@ export default function WomentPage() {
               đây là filter
             </Grid>
             <Grid container item xs={9} spacing={3}>
-              {Products.map(x => (
+              {/* {Products.map(x => (
                 <ShopProduct
                   link={x.link}
                   cost={x.cost}
                   title={x.title}
                   sizeGrid={4}
                 />
-              ))}
+              ))} */}
             </Grid>
           </Grid>
         </Container>

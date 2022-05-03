@@ -6,7 +6,7 @@ const apiClient = axios.create(config.api);
 
 // Request interceptor
 apiClient.interceptors.request.use(
-  config => {
+  (config: any) => {
     const accessToken = localStorage.getItem('access_token');
 
     if (accessToken) {
