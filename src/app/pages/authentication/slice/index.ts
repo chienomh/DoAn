@@ -31,6 +31,25 @@ const slice = createSlice({
     closeMessagae(state) {
       state.openMessage = false;
     },
+
+    login(state, action: PayloadAction<any>) {},
+
+    loginSuccess(state, action: PayloadAction<any>) {
+      state.loading = false;
+      state.data = action.payload;
+      state.typeError = true;
+      state.openMessage = true;
+    },
+
+    loginFail(state) {
+      state.loading = false;
+      state.typeError = false;
+      state.openMessage = true;
+    },
+
+    setDataUser(state, action: PayloadAction<any>) {
+      state.data = action.payload;
+    },
   },
 });
 

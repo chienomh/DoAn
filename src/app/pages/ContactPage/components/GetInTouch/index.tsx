@@ -1,17 +1,33 @@
 import { Button, Grid } from '@mui/material';
 import { Box } from '@mui/system';
-import React from 'react';
+import React, { useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { ShopField } from 'app/components/ShopField';
 import { Label } from './styled';
 import ShopButton from 'app/components/ShopButton';
+import { sendMessAPI } from 'server/contact';
+import AlertShop from 'app/components/alert';
 
 export default function GetInTouch() {
   const handleChangeName = () => {};
 
-  const handleUpdateEvent = () => {};
+  const [openMessage, setOpenMessage] = useState(false);
+
+  const handleUpdateEvent = async () => {
+    const params = {
+      lastName: getValues('firstName'),
+      firstName: getValues('lastName'),
+      email: getValues('email'),
+      message: getValues('message'),
+      subject: getValues('subject'),
+    };
+
+    await sendMessAPI(params);
+
+    setOpenMessage(true);
+  };
 
   const schema = yup.object({
     firstName: yup
@@ -39,11 +55,27 @@ export default function GetInTouch() {
 
   const form = useForm({
     resolver: yupResolver(schema),
-    defaultValues: {},
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      subject: '',
+      message: '',
+    },
     mode: 'all',
   });
+
+  const { getValues } = form;
+
   return (
     <Grid item xs={6} sx={{ marginTop: '50px' }}>
+      <AlertShop
+        type="success"
+        isOpen={openMessage}
+        onClose={() => setOpenMessage(false)}
+        handle={() => setOpenMessage(false)}
+        textAlert="Send message successfully!"
+      />
       <Box bgcolor="whitesmoke" sx={{ padding: '20px' }}>
         <form onSubmit={form.handleSubmit(handleUpdateEvent)}>
           <Box sx={{ marginBottom: '20px' }}>

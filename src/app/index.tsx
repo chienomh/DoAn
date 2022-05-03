@@ -21,6 +21,8 @@ import AboutShop from './pages/AboutPage';
 import ContactPage from './pages/ContactPage';
 import LoginForm from './pages/authentication/login';
 import RegisterForm from './pages/authentication/register';
+import DetailPage from './pages/DetailProduct';
+import CardPage from './pages/CardPage';
 
 export function App() {
   const { i18n } = useTranslation();
@@ -40,6 +42,8 @@ export function App() {
         <Route exact path="/login" component={LoginForm} />
         <Route exact path="/login" component={LoginForm} />
         <Route exact path="/register" component={RegisterForm} />
+        <Route exact path="/detail-products/:id" component={DetailPage} />
+        <Route exact path="/card" component={CardPage} />
         <Route component={NotFoundPage} />
       </Switch>
       <GlobalStyle />

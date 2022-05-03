@@ -1,17 +1,16 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Box, Container } from '@mui/material';
+import { Box, Container, MenuItem, Stack, TextField } from '@mui/material';
 import AlertShop from 'app/components/alert';
 import ShopButton from 'app/components/ShopButton';
 import LayoutShop from 'app/components/ShopLayout';
 import { Label } from 'app/pages/ContactPage/components/GetInTouch/styled';
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
-import { registerAPI } from 'server/register';
 import * as yup from 'yup';
 import { ShopField } from '../../../components/ShopField';
-import { ActionsAuthent, useSlice } from '../slice';
+import { useSlice } from '../slice';
 import { selectAuthent } from '../slice/selectors';
 
 export default function RegisterForm() {
@@ -25,17 +24,19 @@ export default function RegisterForm() {
     password: yup.string().required('This field is is required'),
     phone: yup.string().required('This field is is required'),
     address: yup.string().required('This field is is required'),
+    email: yup.string().required('This field is is required'),
   });
 
   const form = useForm({
     resolver: yupResolver(schema),
     defaultValues: {
       name: '',
-      age: '',
+      age: null,
       username: '',
       password: '',
       phone: '',
       address: '',
+      email: '',
     },
     mode: 'all',
   });
@@ -46,31 +47,45 @@ export default function RegisterForm() {
 
   const { actions } = useSlice();
 
-  const { loading, openMessage } = useSelector(selectAuthent);
+  const { loading, openMessage, typeError } = useSelector(selectAuthent);
 
   const history = useHistory();
 
+  const [gender, setGender] = useState<number>(0);
+
   const handleRegister = async () => {
+    console.log('first');
     const params = {
       name: getValues('name'),
-      age: 18,
-      roles: ['ROLE_USER'],
+      age: getValues('age'),
       username: getValues('username'),
       password: getValues('password'),
       address: getValues('address'),
-      gender: 'Woment',
+      gender: gender,
       phone: getValues('phone'),
+      email: getValues('email'),
     };
     dispatch(actions.register(params));
+  };
+
+  const genders = [
+    { value: 0, label: 'Men' },
+    { value: 1, label: 'Women' },
+  ];
+
+  const handleChangeGenger = e => {
+    setGender(e.target.value);
   };
   return (
     <LayoutShop>
       <AlertShop
         isOpen={openMessage}
-        textAlert="Register successfully!"
-        type="success"
+        textAlert={
+          typeError ? 'Register successfully!' : 'Ops! Something went wrong!'
+        }
+        type={typeError ? 'success' : 'error'}
         onClose={() => dispatch(actions.closeMessagae())}
-        handle={() => history.push('/login')}
+        handle={() => (typeError ? history.push('/login') : '')}
       />
       <Container
         sx={{
@@ -115,11 +130,40 @@ export default function RegisterForm() {
                 errorText={true}
               />
             </Box>
-            <Box sx={{ marginBottom: '20px' }}>
-              <Label>Phone</Label>
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3}>
+              <Box sx={{ marginBottom: '20px', width: '100%' }}>
+                <Label>Phone</Label>
+                <ShopField
+                  form={form}
+                  name="phone"
+                  type="text"
+                  errorText={true}
+                />
+              </Box>
+              <Box>
+                <Label>Gender</Label>
+                <TextField
+                  select
+                  value={gender}
+                  sx={{
+                    '.MuiSelect-select': { width: '120px' },
+                    backgroundColor: 'white',
+                  }}
+                  onChange={handleChangeGenger}
+                >
+                  {genders.map(o => (
+                    <MenuItem key={o.value} value={o.value}>
+                      {o.label}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Box>
+            </Stack>
+            <Box sx={{ marginBottom: '20px', width: '100%' }}>
+              <Label>Email</Label>
               <ShopField
                 form={form}
-                name="phone"
+                name="email"
                 type="text"
                 errorText={true}
               />
