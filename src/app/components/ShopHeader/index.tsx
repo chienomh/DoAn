@@ -15,6 +15,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import PermIdentityIcon from '@mui/icons-material/PermIdentity';
 import SettingsIcon from '@mui/icons-material/Settings';
 import { selectDetailProduct } from 'app/pages/DetailProduct/slice/selectors';
+import CalendarViewDayIcon from '@mui/icons-material/CalendarViewDay';
 
 export default function HeaderShop() {
   const history = useHistory();
@@ -49,6 +50,9 @@ export default function HeaderShop() {
   const [totalCard, setTotalCard] = React.useState<number>(0);
 
   const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const [search, setSearch] = React.useState<string>('');
+
   const open = Boolean(anchorEl);
   const handleClick = event => {
     setAnchorEl(event.currentTarget);
@@ -101,6 +105,7 @@ export default function HeaderShop() {
 
   const handleLogout = () => {
     localStorage.removeItem('userId');
+    localStorage.setItem('access_token', '');
     setUser('');
   };
 
@@ -117,6 +122,35 @@ export default function HeaderShop() {
 
   const goCard = () => {
     history.push('/card');
+  };
+
+  const goChangePassword = () => {
+    history.push('/change-password');
+  };
+
+  const goProfile = () => {
+    history.push('/profile');
+  };
+
+  useEffect(() => {
+    if (!localStorage.getItem('valueSearch')) {
+      localStorage.setItem('valueSearch', JSON.stringify(''));
+    } else {
+      setSearch(JSON.parse(localStorage.getItem('valueSearch') || ''));
+    }
+  });
+
+  const changeValueSearch = e => {
+    setSearch(e.target.value);
+    localStorage.setItem('valueSearch', JSON.stringify(e.target.value));
+  };
+
+  const handleSearch = () => {
+    history.push('/products');
+  };
+
+  const goViewOders = () => {
+    history.push('/view-oders');
   };
   return (
     <Box>
@@ -137,8 +171,15 @@ export default function HeaderShop() {
               '>input': { height: '20px' },
             }}
             color="secondary"
+            onChange={changeValueSearch}
+            value={search}
           />
-          <ShopButton text="search" isLoading={false} isDisabled={false} />
+          <ShopButton
+            text="search"
+            isLoading={false}
+            isDisabled={false}
+            handleClick={handleSearch}
+          />
         </Box>
       </Box>
       <Box
@@ -171,17 +212,17 @@ export default function HeaderShop() {
           marginBottom="5px"
           alignItems="center"
         >
-          {userId && (
+          {user && (
             <Box display="flex" alignItems="center" onClick={goCard}>
               <ShoppingCartIcon /> CART [{totalCard}]
             </Box>
           )}
 
           {!user && path !== '/login' && (
-            <ShopButton text="Đăng nhập" handleClick={handleGoLogin} />
+            <ShopButton text="Login" handleClick={handleGoLogin} />
           )}
           {!user && path !== '/register' && (
-            <ShopButton text="Đăng ký" handleClick={handleGoRegister} />
+            <ShopButton text="Register" handleClick={handleGoRegister} />
           )}
           {user && (
             <div>
@@ -202,12 +243,17 @@ export default function HeaderShop() {
                   'aria-labelledby': 'basic-button',
                 }}
               >
-                <MenuItem onClick={handleClose}>
+                <MenuItem onClick={goViewOders}>
+                  {' '}
+                  <CalendarViewDayIcon sx={{ marginRight: '5px' }} />
+                  View orders
+                </MenuItem>
+                <MenuItem onClick={goProfile}>
                   {' '}
                   <PermIdentityIcon sx={{ marginRight: '5px' }} />
-                  Profile
+                  Edit personal information
                 </MenuItem>
-                <MenuItem onClick={handleClose}>
+                <MenuItem onClick={goChangePassword}>
                   {' '}
                   <SettingsIcon sx={{ marginRight: '5px' }} />
                   Change Password

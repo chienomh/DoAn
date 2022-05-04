@@ -1,4 +1,4 @@
-import { Box, Container, Grid, Stack, Button } from '@mui/material';
+import { Box, Container, Grid, Stack, Button, TextField } from '@mui/material';
 import LayoutShop from 'app/components/ShopLayout';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,6 +8,9 @@ import { selectDetailProduct } from './slice/selectors';
 import { Price, StyleQuantity, Title } from './styled';
 import AddIcon from '@mui/icons-material/Add';
 import AlertShop from 'app/components/alert';
+import BoxReview from './BoxReview';
+import ReactStars from 'react-rating-stars-component';
+import { selectAuthent } from '../authentication/slice/selectors';
 
 const listBranch = [
   { value: 0, label: 'Nike' },
@@ -56,6 +59,9 @@ const listGender = [
 export default function DetailPage() {
   const [quantity, setQuantity] = useState<number>(1);
   const [size, setSize] = useState<number>(-1);
+  const [openBoxReview, setOpenBoxReview] = useState<boolean>(false);
+  const [comment, setComment] = useState<string>('');
+  const [star, setStar] = useState<number>(0);
 
   const dispatch = useDispatch();
 
@@ -67,11 +73,17 @@ export default function DetailPage() {
 
   const product = useSelector(selectDetailProduct).data;
 
-  const { openAlert } = useSelector(selectDetailProduct);
+  const { openAlert, dataReview, openAlertReview } =
+    useSelector(selectDetailProduct);
+
+  const { data } = useSelector(selectAuthent);
+
+  console.log(dataReview);
 
   useEffect(() => {
     dispatch(actions.getProductDetail(param));
-  }, [param]);
+    dispatch(actions.handleGetReview(product.id));
+  }, [param, product.id, openAlertReview]);
 
   const handleAdd = () => {
     setQuantity(prev => prev + 1);
@@ -84,7 +96,10 @@ export default function DetailPage() {
   };
 
   const handleAddToCard = id => {
-    if (localStorage.getItem('card')) {
+    if (
+      localStorage.getItem('card') &&
+      JSON.parse(localStorage.getItem('card') || '').length > 0
+    ) {
       const data = JSON.parse(localStorage.getItem('card') || '');
 
       const sizeId = product.listSize.filter(x => x.id == size)[0].id;
@@ -98,7 +113,8 @@ export default function DetailPage() {
         name: product.name,
       };
 
-      if (data.filter(x => x.id === id)) {
+      if (data.some(x => x.id === id)) {
+        console.log(id);
         const dataFilter = data.map(x => {
           if (x.id === id) {
             return {
@@ -110,6 +126,7 @@ export default function DetailPage() {
         localStorage.setItem('card', JSON.stringify(dataFilter));
       } else {
         const dataNew = data.concat(newProduct);
+        console.log(dataNew);
         localStorage.setItem('card', JSON.stringify(dataNew));
       }
 
@@ -131,6 +148,9 @@ export default function DetailPage() {
           name: product.name,
         },
       ]);
+
+      console.log(data);
+
       localStorage.setItem('card', data);
 
       dispatch(
@@ -145,6 +165,31 @@ export default function DetailPage() {
   const handleChooseSize = index => {
     setSize(index);
   };
+
+  const handleCreatReview = () => {
+    setOpenBoxReview(true);
+  };
+
+  const handleCloseBoxReview = () => {
+    setOpenBoxReview(false);
+  };
+
+  const handleClickStar = e => {
+    setStar(e);
+  };
+
+  const handleReview = () => {
+    const params = {
+      comment: comment,
+      productId: product.id,
+      star: star,
+      userId: data.id,
+    };
+    console.log(star);
+    dispatch(actions.handleReviews(params));
+    setOpenBoxReview(false);
+  };
+
   return (
     <LayoutShop>
       <AlertShop
@@ -154,6 +199,17 @@ export default function DetailPage() {
         onClose={() => {
           dispatch(actions.closeAlert());
           history.push('/');
+        }}
+        handl={() => history.push('/')}
+      />
+
+      <AlertShop
+        isOpen={openAlertReview}
+        textAlert="Review successfully"
+        type="success"
+        onClose={() => {
+          dispatch(actions.closeAlert());
+          window.location.reload();
         }}
         handl={() => history.push('/')}
       />
@@ -322,7 +378,7 @@ export default function DetailPage() {
                 <Title sx={{ fontSize: '16px' }}>Size: </Title>
               </Grid>
               <Grid item xs={8}>
-                <Title>
+                <Title sx={{ display: 'flex', flexWrap: 'wrap' }}>
                   {product.listSize.map((x, index) => (
                     <StyleQuantity
                       onClick={() => handleChooseSize(x.id)}
@@ -374,6 +430,74 @@ export default function DetailPage() {
             </Box>
           </Grid>
         </Grid>
+        <Box
+          width="100%"
+          border="1px solid #ccc"
+          borderRadius="20px"
+          marginTop="50px"
+          padding="20px"
+          fontSize="20px"
+        >
+          <Box maxHeight="500px" sx={{ overflowY: 'scroll' }}>
+            {dataReview.length > 0 ? (
+              <Box>
+                <Box fontWeight={700} marginBottom="20px">
+                  Review
+                </Box>
+                {dataReview.map(x => (
+                  <BoxReview
+                    comment={x.comment}
+                    username={x.userName}
+                    star={x.star}
+                  />
+                ))}
+              </Box>
+            ) : (
+              'There are no reviews yet '
+            )}
+          </Box>
+          <Button
+            variant="contained"
+            sx={{ margin: '20px', display: openBoxReview ? 'none' : 'block' }}
+            onClick={handleCreatReview}
+          >
+            Create review
+          </Button>
+          <Box
+            sx={{
+              bgcolor: '#fff',
+              padding: '20px',
+              borderRadius: '20px',
+              marginTop: '20px',
+            }}
+            display={openBoxReview ? 'block' : 'none'}
+          >
+            <Box>{data.name}</Box>
+            <ReactStars
+              count={5}
+              size={20}
+              activeColor="#ffd700"
+              onChange={handleClickStar}
+            />
+            <TextField
+              sx={{ width: '100%' }}
+              onChange={e => setComment(e.target.value)}
+            />
+            <Box
+              marginTop="20px"
+              display="flex"
+              justifyContent="right"
+              gap="20px"
+            >
+              <Button variant="contained" onClick={handleReview}>
+                review
+              </Button>
+              <Button variant="contained" onClick={handleCloseBoxReview}>
+                cancel
+              </Button>
+            </Box>
+          </Box>
+        </Box>
       </Container>
     </LayoutShop>
   );

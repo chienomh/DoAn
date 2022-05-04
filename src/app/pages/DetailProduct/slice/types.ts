@@ -29,4 +29,6 @@ export interface DetailProduct {
   data: Product;
   card: number;
   openAlert: boolean;
+  dataReview: any[];
+  openAlertReview: boolean;
 }
