@@ -12,12 +12,6 @@ export interface Iprops {
 }
 
 export default function BoxReview(props: Iprops) {
-  const renStar = () => {
-    for (let i = 0; i < props.star; i++) {
-      return <StarIcon sx={{ color: 'yellow' }} />;
-    }
-  };
-
   return (
     <Box fontSize="16px" borderBottom="1px solid #ccc">
       <Grid container>
@@ -33,6 +27,7 @@ export default function BoxReview(props: Iprops) {
           Star:{' '}
         </Grid>
         <Grid item xs={5}>
+          {console.log(props.star)}
           <ReactStars
             count={5}
             size={20}

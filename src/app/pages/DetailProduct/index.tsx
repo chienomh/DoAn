@@ -73,14 +73,17 @@ export default function DetailPage() {
 
   const product = useSelector(selectDetailProduct).data;
 
-  const { openAlert, dataReview } = useSelector(selectDetailProduct);
+  const { openAlert, dataReview, openAlertReview } =
+    useSelector(selectDetailProduct);
 
   const { data } = useSelector(selectAuthent);
+
+  console.log(dataReview);
 
   useEffect(() => {
     dispatch(actions.getProductDetail(param));
     dispatch(actions.handleGetReview(product.id));
-  }, [param, product.id]);
+  }, [param, product.id, openAlertReview]);
 
   const handleAdd = () => {
     setQuantity(prev => prev + 1);
@@ -93,7 +96,10 @@ export default function DetailPage() {
   };
 
   const handleAddToCard = id => {
-    if (localStorage.getItem('card')) {
+    if (
+      localStorage.getItem('card') &&
+      JSON.parse(localStorage.getItem('card') || '').length > 0
+    ) {
       const data = JSON.parse(localStorage.getItem('card') || '');
 
       const sizeId = product.listSize.filter(x => x.id == size)[0].id;
@@ -107,7 +113,8 @@ export default function DetailPage() {
         name: product.name,
       };
 
-      if (data.filter(x => x.id === id)) {
+      if (data.some(x => x.id === id)) {
+        console.log(id);
         const dataFilter = data.map(x => {
           if (x.id === id) {
             return {
@@ -119,6 +126,7 @@ export default function DetailPage() {
         localStorage.setItem('card', JSON.stringify(dataFilter));
       } else {
         const dataNew = data.concat(newProduct);
+        console.log(dataNew);
         localStorage.setItem('card', JSON.stringify(dataNew));
       }
 
@@ -140,6 +148,9 @@ export default function DetailPage() {
           name: product.name,
         },
       ]);
+
+      console.log(data);
+
       localStorage.setItem('card', data);
 
       dispatch(
@@ -166,6 +177,19 @@ export default function DetailPage() {
   const handleClickStar = e => {
     setStar(e);
   };
+
+  const handleReview = () => {
+    const params = {
+      comment: comment,
+      productId: product.id,
+      star: star,
+      userId: data.id,
+    };
+    console.log(star);
+    dispatch(actions.handleReviews(params));
+    setOpenBoxReview(false);
+  };
+
   return (
     <LayoutShop>
       <AlertShop
@@ -175,6 +199,17 @@ export default function DetailPage() {
         onClose={() => {
           dispatch(actions.closeAlert());
           history.push('/');
+        }}
+        handl={() => history.push('/')}
+      />
+
+      <AlertShop
+        isOpen={openAlertReview}
+        textAlert="Review successfully"
+        type="success"
+        onClose={() => {
+          dispatch(actions.closeAlert());
+          window.location.reload();
         }}
         handl={() => history.push('/')}
       />
@@ -403,22 +438,24 @@ export default function DetailPage() {
           padding="20px"
           fontSize="20px"
         >
-          {dataReview.length > 0 ? (
-            <Box>
-              <Box fontWeight={700} marginBottom="20px">
-                Review
+          <Box height="500px" sx={{ overflowY: 'scroll' }}>
+            {dataReview.length > 0 ? (
+              <Box>
+                <Box fontWeight={700} marginBottom="20px">
+                  Review
+                </Box>
+                {dataReview.map(x => (
+                  <BoxReview
+                    comment={x.comment}
+                    username={x.userName}
+                    star={x.star}
+                  />
+                ))}
               </Box>
-              {dataReview.map(x => (
-                <BoxReview
-                  comment={x.comment}
-                  username={x.userName}
-                  star={x.star}
-                />
-              ))}
-            </Box>
-          ) : (
-            'There are no reviews yet '
-          )}
+            ) : (
+              'There are no reviews yet '
+            )}
+          </Box>
           <Button
             variant="contained"
             sx={{ margin: '20px', display: openBoxReview ? 'none' : 'block' }}
@@ -452,7 +489,9 @@ export default function DetailPage() {
               justifyContent="right"
               gap="20px"
             >
-              <Button variant="contained">review</Button>
+              <Button variant="contained" onClick={handleReview}>
+                review
+              </Button>
               <Button variant="contained" onClick={handleCloseBoxReview}>
                 cancel
               </Button>
