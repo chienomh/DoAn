@@ -1,4 +1,4 @@
-import { Box, Container, Grid, Stack, Button } from '@mui/material';
+import { Box, Container, Grid, Stack, Button, TextField } from '@mui/material';
 import LayoutShop from 'app/components/ShopLayout';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,6 +8,9 @@ import { selectDetailProduct } from './slice/selectors';
 import { Price, StyleQuantity, Title } from './styled';
 import AddIcon from '@mui/icons-material/Add';
 import AlertShop from 'app/components/alert';
+import BoxReview from './BoxReview';
+import ReactStars from 'react-rating-stars-component';
+import { selectAuthent } from '../authentication/slice/selectors';
 
 const listBranch = [
   { value: 0, label: 'Nike' },
@@ -56,6 +59,9 @@ const listGender = [
 export default function DetailPage() {
   const [quantity, setQuantity] = useState<number>(1);
   const [size, setSize] = useState<number>(-1);
+  const [openBoxReview, setOpenBoxReview] = useState<boolean>(false);
+  const [comment, setComment] = useState<string>('');
+  const [star, setStar] = useState<number>(0);
 
   const dispatch = useDispatch();
 
@@ -67,11 +73,14 @@ export default function DetailPage() {
 
   const product = useSelector(selectDetailProduct).data;
 
-  const { openAlert } = useSelector(selectDetailProduct);
+  const { openAlert, dataReview } = useSelector(selectDetailProduct);
+
+  const { data } = useSelector(selectAuthent);
 
   useEffect(() => {
     dispatch(actions.getProductDetail(param));
-  }, [param]);
+    dispatch(actions.handleGetReview(product.id));
+  }, [param, product.id]);
 
   const handleAdd = () => {
     setQuantity(prev => prev + 1);
@@ -144,6 +153,18 @@ export default function DetailPage() {
 
   const handleChooseSize = index => {
     setSize(index);
+  };
+
+  const handleCreatReview = () => {
+    setOpenBoxReview(true);
+  };
+
+  const handleCloseBoxReview = () => {
+    setOpenBoxReview(false);
+  };
+
+  const handleClickStar = e => {
+    setStar(e);
   };
   return (
     <LayoutShop>
@@ -374,6 +395,70 @@ export default function DetailPage() {
             </Box>
           </Grid>
         </Grid>
+        <Box
+          width="100%"
+          border="1px solid #ccc"
+          borderRadius="20px"
+          marginTop="50px"
+          padding="20px"
+          fontSize="20px"
+        >
+          {dataReview.length > 0 ? (
+            <Box>
+              <Box fontWeight={700} marginBottom="20px">
+                Review
+              </Box>
+              {dataReview.map(x => (
+                <BoxReview
+                  comment={x.comment}
+                  username={x.userName}
+                  star={x.star}
+                />
+              ))}
+            </Box>
+          ) : (
+            'There are no reviews yet '
+          )}
+          <Button
+            variant="contained"
+            sx={{ margin: '20px', display: openBoxReview ? 'none' : 'block' }}
+            onClick={handleCreatReview}
+          >
+            Create review
+          </Button>
+          <Box
+            sx={{
+              bgcolor: '#fff',
+              padding: '20px',
+              borderRadius: '20px',
+              marginTop: '20px',
+            }}
+            display={openBoxReview ? 'block' : 'none'}
+          >
+            <Box>{data.name}</Box>
+            <ReactStars
+              count={5}
+              size={20}
+              activeColor="#ffd700"
+              onChange={handleClickStar}
+            />
+            <TextField
+              sx={{ width: '100%' }}
+              onChange={e => setComment(e.target.value)}
+            />
+            <Box
+              marginTop="20px"
+              display="flex"
+              justifyContent="right"
+              gap="20px"
+            >
+              <Button variant="contained">review</Button>
+              <Button variant="contained" onClick={handleCloseBoxReview}>
+                cancel
+              </Button>
+            </Box>
+          </Box>
+        </Box>
       </Container>
     </LayoutShop>
   );

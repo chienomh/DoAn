@@ -26,6 +26,7 @@ export const initialState: DetailProduct = {
   },
   card: 0,
   openAlert: false,
+  dataReview: [],
 };
 
 const slice = createSlice({
@@ -42,6 +43,12 @@ const slice = createSlice({
 
     setTotalCard(state, action: PayloadAction<number>) {
       state.card = action.payload;
+    },
+
+    handleGetReview(state, action: PayloadAction<number>) {},
+
+    handleGetReviewSuccess(state, action: PayloadAction<any>) {
+      state.dataReview = action.payload;
     },
 
     openAlert(state) {
