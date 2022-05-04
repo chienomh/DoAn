@@ -27,6 +27,7 @@ export const initialState: DetailProduct = {
   card: 0,
   openAlert: false,
   dataReview: [],
+  openAlertReview: false,
 };
 
 const slice = createSlice({
@@ -57,6 +58,13 @@ const slice = createSlice({
 
     closeAlert(state) {
       state.openAlert = false;
+      state.openAlertReview = false;
+    },
+
+    handleReviews(state, action: PayloadAction<any>) {},
+
+    handleReviewsSuccess(state) {
+      state.openAlertReview = true;
     },
   },
 });
