@@ -77,9 +77,17 @@ export default function MenPage() {
     dispatch(actions.getListProduct(param));
   }, [param]);
 
-  const handleChangeBranch = value => {
-    // setBranch(value);
+  const handleChangeSearch = () => {
+    const value = JSON.parse(localStorage.getItem('valueSearch') || '');
+    const newParam = { ...param, product_name: value };
+    dispatch(actions.changeParams(newParam));
+  };
 
+  useEffect(() => {
+    handleChangeSearch();
+  }, [localStorage.getItem('valueSearch')]);
+
+  const handleChangeBranch = value => {
     if (branch === value) {
       setBranch(-1);
 

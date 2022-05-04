@@ -10,6 +10,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import LayoutShop from '../../components/ShopLayout';
@@ -20,9 +21,12 @@ import { useSlice } from './slice';
 import { selectBill } from './slice/selectors';
 import AlertShop from 'app/components/alert';
 import { useHistory } from 'react-router-dom';
+import { getCoupon } from 'server/billService';
 
 export default function CardPage() {
   const [dataCard, setDataCard] = useState<any>([]);
+  const [coupon, setCoupon] = useState<string>('');
+  const [percent, setPercent] = useState<any>();
 
   const userId = JSON.parse(localStorage.getItem('userId') || '');
 
@@ -44,7 +48,6 @@ export default function CardPage() {
   const handleSubQuantity = id => {
     const product = dataCard.filter(x => x.id === id)[0];
 
-    console.log(product);
     if (product.quantity > 1) {
       const newCard = dataCard.map(x => {
         if (x.id === id) {
@@ -78,18 +81,21 @@ export default function CardPage() {
 
   const handleBuy = () => {
     const params = {
-      couponName: '',
-      discountPersent: 0,
+      couponName: percent ? percent.name : '',
+      discountPersent: percent ? percent.percent : 0,
       listBillProducts: dataCard.map(x => ({
         productId: x.id,
         quantity: x.quantity,
         sizeId: x.sizeId,
       })),
 
-      priceTotal: dataCard.reduce(
-        (init, curr) => init + curr.quantity * curr.price,
-        0,
-      ),
+      priceTotal: percent
+        ? dataCard.reduce(
+            (init, curr) => init + curr.quantity * curr.price,
+            0,
+          ) *
+          (percent.percent / 100)
+        : dataCard.reduce((init, curr) => init + curr.quantity * curr.price, 0),
       userId: userId,
     };
 
@@ -100,7 +106,12 @@ export default function CardPage() {
     localStorage.setItem('card', '');
   };
 
-  console.log(dataCard);
+  const changeCoupon = async e => {
+    setCoupon(e.target.value);
+    const data = await getCoupon(e.target.value);
+    console.log(data.data);
+    setPercent(data.data);
+  };
   return (
     <LayoutShop>
       <Container sx={{ paddingTop: '50px' }}>
@@ -178,7 +189,30 @@ export default function CardPage() {
                       fontWeight: 600,
                     }}
                   >
-                    0
+                    <TextField onChange={changeCoupon} value={coupon} />
+                  </TableCell>
+                  <TableCell></TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell
+                    colSpan={5}
+                    sx={{
+                      textTransform: 'uppercase',
+                      textAlign: 'center',
+                      fontWeight: 600,
+                      fontSize: '18px',
+                    }}
+                  >
+                    Percent
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      textTransform: 'uppercase',
+                      textAlign: 'center',
+                      fontWeight: 600,
+                    }}
+                  >
+                    {percent ? percent.percent : 0}
                   </TableCell>
                   <TableCell></TableCell>
                 </TableRow>
@@ -201,10 +235,16 @@ export default function CardPage() {
                       fontWeight: 600,
                     }}
                   >
-                    {dataCard.reduce(
-                      (init, curr) => init + curr.quantity * curr.price,
-                      0,
-                    )}
+                    {percent
+                      ? dataCard.reduce(
+                          (init, curr) => init + curr.quantity * curr.price,
+                          0,
+                        ) *
+                        (percent.percent / 100)
+                      : dataCard.reduce(
+                          (init, curr) => init + curr.quantity * curr.price,
+                          0,
+                        )}
                   </TableCell>
                   <TableCell></TableCell>
                 </TableRow>
