@@ -18,3 +18,8 @@ export const listProduct = params =>
       params.technology ? params.technology : ''
     }`,
   );
+
+export const getReview = id => apiClient.get(`/review/list?productId=${id}`);
+
+export const actionReview = params =>
+  apiClient.post('/member/review/add', params);
