@@ -21,8 +21,8 @@ function* handleLogin(action) {
     const data = yield call(loginAPI, action.payload);
     localStorage.setItem('access_token', data.data.accessToken);
     localStorage.setItem('userId', data.data.userId);
-    const inforUser = yield call(getDetailUser, data.data.userId);
-    yield put(ActionsAuthent.loginSuccess(inforUser.data));
+    // const inforUser = yield call(getDetailUser, data.data.userId);
+    yield put(ActionsAuthent.loginSuccess(data.data));
   } catch (error) {
     yield put(ActionsAuthent.loginFail());
   }

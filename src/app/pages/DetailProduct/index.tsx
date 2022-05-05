@@ -378,7 +378,7 @@ export default function DetailPage() {
                 <Title sx={{ fontSize: '16px' }}>Size: </Title>
               </Grid>
               <Grid item xs={8}>
-                <Title>
+                <Title sx={{ display: 'flex', flexWrap: 'wrap' }}>
                   {product.listSize.map((x, index) => (
                     <StyleQuantity
                       onClick={() => handleChooseSize(x.id)}
@@ -438,7 +438,7 @@ export default function DetailPage() {
           padding="20px"
           fontSize="20px"
         >
-          <Box height="500px" sx={{ overflowY: 'scroll' }}>
+          <Box maxHeight="500px" sx={{ overflowY: 'scroll' }}>
             {dataReview.length > 0 ? (
               <Box>
                 <Box fontWeight={700} marginBottom="20px">

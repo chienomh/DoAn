@@ -23,6 +23,9 @@ import LoginForm from './pages/authentication/login';
 import RegisterForm from './pages/authentication/register';
 import DetailPage from './pages/DetailProduct';
 import CardPage from './pages/CardPage';
+import ChangePassword from './pages/ChangePasswordPage';
+import Profile from './pages/Profile';
+import ViewOders from './pages/ViewOdersPage';
 
 export function App() {
   const { i18n } = useTranslation();
@@ -44,6 +47,9 @@ export function App() {
         <Route exact path="/register" component={RegisterForm} />
         <Route exact path="/detail-products/:id" component={DetailPage} />
         <Route exact path="/card" component={CardPage} />
+        <Route exact path="/change-password" component={ChangePassword} />
+        <Route exact path="/profile" component={Profile} />
+        <Route exact path="/view-oders" component={ViewOders} />
         <Route component={NotFoundPage} />
       </Switch>
       <GlobalStyle />
