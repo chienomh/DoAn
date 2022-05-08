@@ -210,7 +210,7 @@ export default function CardPage() {
                       fontSize: '18px',
                     }}
                   >
-                    Percent
+                    percentage is reduced
                   </TableCell>
                   <TableCell
                     sx={{
@@ -219,7 +219,7 @@ export default function CardPage() {
                       fontWeight: 600,
                     }}
                   >
-                    {percent ? percent.percent : 0}
+                    {percent ? percent.percent : 0} %
                   </TableCell>
                   <TableCell></TableCell>
                 </TableRow>
@@ -246,12 +246,17 @@ export default function CardPage() {
                       ? dataCard.reduce(
                           (init, curr) => init + curr.quantity * curr.price,
                           0,
+                        ) -
+                        dataCard.reduce(
+                          (init, curr) => init + curr.quantity * curr.price,
+                          0,
                         ) *
-                        (percent.percent / 100)
+                          (percent.percent / 100)
                       : dataCard.reduce(
                           (init, curr) => init + curr.quantity * curr.price,
                           0,
-                        )}
+                        )}{' '}
+                    $
                   </TableCell>
                   <TableCell></TableCell>
                 </TableRow>

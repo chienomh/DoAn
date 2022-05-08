@@ -7,16 +7,16 @@ import { ListProduct } from './types';
 export const initialState: ListProduct = {
   data: [],
   param: {
-    // branch: 0,
-    // color: 0,
-    // gender: 0,
-    // material: 0,
-    // offset: 0,
-    // pageNumber: 0,
-    // pageSize: 0,
-    // product_name: '',
-    // style: 0,
-    // technology: 0,
+    branch: -1,
+    color: -1,
+    gender: -1,
+    material: -1,
+    offset: -1,
+    pageNumber: -1,
+    pageSize: -1,
+    product_name: '',
+    style: -1,
+    technology: -1,
   },
 };
 
