@@ -9,4 +9,4 @@ export const loginAPI = params =>
 
 export const getInforAPI = () => apiClient.get(`/member/me`);
 
-export const getDetailUser = params => apiClient.get(`/admin/user/${params}`);
+export const getDetailUser = params => apiClient.get(`/user/${params}`);
