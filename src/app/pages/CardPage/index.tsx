@@ -28,8 +28,6 @@ export default function CardPage() {
   const [coupon, setCoupon] = useState<string>('');
   const [percent, setPercent] = useState<any>();
 
-  const userId = JSON.parse(localStorage.getItem('userId') || '');
-
   const dispatch = useDispatch();
 
   const { actions } = useSlice();
@@ -80,30 +78,39 @@ export default function CardPage() {
   };
 
   const handleBuy = () => {
-    const params = {
-      couponName: percent ? percent.name : '',
-      discountPersent: percent ? percent.percent : 0,
-      listBillProducts: dataCard.map(x => ({
-        productId: x.id,
-        quantity: x.quantity,
-        sizeId: x.sizeId,
-      })),
+    if (localStorage.getItem('userId')) {
+      const userId = JSON.parse(localStorage.getItem('userId') || '');
 
-      priceTotal: percent
-        ? dataCard.reduce(
-            (init, curr) => init + curr.quantity * curr.price,
-            0,
-          ) *
-          (percent.percent / 100)
-        : dataCard.reduce((init, curr) => init + curr.quantity * curr.price, 0),
-      userId: userId,
-    };
+      const params = {
+        couponName: percent ? percent.name : '',
+        discountPersent: percent ? percent.percent : 0,
+        listBillProducts: dataCard.map(x => ({
+          productId: x.id,
+          quantity: x.quantity,
+          sizeId: x.sizeId,
+        })),
 
-    dispatch(actions.handleCreateBill(params));
+        priceTotal: percent
+          ? dataCard.reduce(
+              (init, curr) => init + curr.quantity * curr.price,
+              0,
+            ) *
+            (percent.percent / 100)
+          : dataCard.reduce(
+              (init, curr) => init + curr.quantity * curr.price,
+              0,
+            ),
+        userId: userId,
+      };
 
-    dispatch(actions.handleCreateBillSuccess());
+      dispatch(actions.handleCreateBill(params));
 
-    localStorage.setItem('card', '');
+      dispatch(actions.handleCreateBillSuccess());
+
+      localStorage.setItem('card', '');
+    } else {
+      history.push('/login');
+    }
   };
 
   const changeCoupon = async e => {
