@@ -212,11 +212,11 @@ export default function HeaderShop() {
           marginBottom="5px"
           alignItems="center"
         >
-          {user && (
-            <Box display="flex" alignItems="center" onClick={goCard}>
-              <ShoppingCartIcon /> CART [{totalCard}]
-            </Box>
-          )}
+          {/* {user && ( */}
+          <Box display="flex" alignItems="center" onClick={goCard}>
+            <ShoppingCartIcon /> CART [{totalCard}]
+          </Box>
+          {/* )} */}
 
           {!user && path !== '/login' && (
             <ShopButton text="Login" handleClick={handleGoLogin} />

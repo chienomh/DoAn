@@ -287,7 +287,7 @@ export default function MenPage() {
                 </Box>
               </WrapperFilter>
               <WrapperFilter>
-                <TitleFilter>Color</TitleFilter>
+                <TitleFilter>Gender</TitleFilter>
                 <Box>
                   {listGender.map(x => (
                     <ButtonFilter
