@@ -55,17 +55,17 @@ const listGender = [
 ];
 
 export default function MenPage() {
-  const [branch, setBranch] = useState<number>(-1);
+  const [branch, setBranch] = useState<any>(-1);
 
-  const [material, setMaterial] = useState<number>(-1);
+  const [material, setMaterial] = useState<any>(-1);
 
-  const [style, setStyle] = useState<number>(-1);
+  const [style, setStyle] = useState<any>(-1);
 
-  const [technology, setTechnology] = useState<number>(-1);
+  const [technology, setTechnology] = useState<any>(-1);
 
-  const [color, setColor] = useState<number>(-1);
+  const [color, setColor] = useState<any>(-1);
 
-  const [gender, setGender] = useState<number>(-1);
+  const [gender, setGender] = useState<any>(-1);
 
   const dispatch = useDispatch();
 
@@ -92,10 +92,8 @@ export default function MenPage() {
       setBranch(-1);
 
       const { branch, ...rest } = param;
-
-      console.log(rest);
-
-      dispatch(actions.changeParams(rest));
+      const newParam = { ...param, branch: '' };
+      dispatch(actions.changeParams(newParam));
     } else {
       setBranch(value);
 
@@ -110,10 +108,9 @@ export default function MenPage() {
       setMaterial(-1);
 
       const { material, ...rest } = param;
+      const newParam = { ...param, material: '' };
 
-      console.log(rest);
-
-      dispatch(actions.changeParams(rest));
+      dispatch(actions.changeParams(newParam));
     } else {
       setMaterial(value);
 
@@ -129,10 +126,8 @@ export default function MenPage() {
       setStyle(-1);
 
       const { style, ...rest } = param;
-
-      console.log(rest);
-
-      dispatch(actions.changeParams(rest));
+      const newParam = { ...param, style: '' };
+      dispatch(actions.changeParams(newParam));
     } else {
       setStyle(value);
 
@@ -149,10 +144,8 @@ export default function MenPage() {
       setTechnology(-1);
 
       const { technology, ...rest } = param;
-
-      console.log(rest);
-
-      dispatch(actions.changeParams(rest));
+      const newParam = { ...param, technology: '' };
+      dispatch(actions.changeParams(newParam));
     } else {
       setTechnology(value);
 
@@ -169,10 +162,8 @@ export default function MenPage() {
       setColor(-1);
 
       const { color, ...rest } = param;
-
-      console.log(rest);
-
-      dispatch(actions.changeParams(rest));
+      const newParam = { ...param, color: '' };
+      dispatch(actions.changeParams(newParam));
     } else {
       setColor(value);
 
@@ -189,10 +180,8 @@ export default function MenPage() {
       setGender(-1);
 
       const { gender, ...rest } = param;
-
-      console.log(rest);
-
-      dispatch(actions.changeParams(rest));
+      const newParam = { ...param, gender: '' };
+      dispatch(actions.changeParams(newParam));
     } else {
       setGender(value);
 
@@ -214,7 +203,7 @@ export default function MenPage() {
           margin="50px 50px"
           textTransform="uppercase"
         >
-          All products for men
+          All products
         </Box>
         <Container sx={{ marginBottom: '100px' }}>
           <Grid container spacing={2}>

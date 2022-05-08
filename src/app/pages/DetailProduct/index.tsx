@@ -78,8 +78,6 @@ export default function DetailPage() {
 
   const { data } = useSelector(selectAuthent);
 
-  console.log(dataReview);
-
   useEffect(() => {
     dispatch(actions.getProductDetail(param));
     dispatch(actions.handleGetReview(product.id));
@@ -149,8 +147,6 @@ export default function DetailPage() {
         },
       ]);
 
-      console.log(data);
-
       localStorage.setItem('card', data);
 
       dispatch(
@@ -167,7 +163,11 @@ export default function DetailPage() {
   };
 
   const handleCreatReview = () => {
-    setOpenBoxReview(true);
+    if (localStorage.getItem('userId')) {
+      setOpenBoxReview(true);
+    } else {
+      history.push('/login');
+    }
   };
 
   const handleCloseBoxReview = () => {

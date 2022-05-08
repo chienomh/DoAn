@@ -6,16 +6,16 @@ export const getProductDetailAPI = id => apiClient.get(`/product/${id}`);
 
 export const listProduct = params =>
   apiClient.get(
-    `/product/filter?branch=${params.branch ? params.branch : ''}&color=${
-      params.color ? params.color : ''
-    }&gender=${params.gender ? params.gender : ''}&material=${
-      params.material ? params.material : ''
-    }&offset=${params.offset ? params.offset : ''}&pageNumber=${
-      params.branch ? params.branch : ''
-    }&pageSize=${params.pageSize ? params.pageSize : ''}&product_name=${
+    `/product/filter?branch=${
+      params.branch !== -1 ? params.branch : ''
+    }&color=${params.color !== -1 ? params.color : ''}&gender=${
+      params.gender !== -1 ? params.gender : ''
+    }&material=${params.material !== -1 ? params.material : ''}&offset=${
+      params.offset !== -1 ? params.offset : ''
+    }&pageNumber=1&pageSize=1&product_name=${
       params.product_name ? params.product_name : ''
-    }&sort=0&style=${params.style ? params.style : ''}&technology=${
-      params.technology ? params.technology : ''
+    }&sort=0&style=${params.style !== -1 ? params.style : ''}&technology=${
+      params.technology !== -1 ? params.technology : ''
     }`,
   );
 
