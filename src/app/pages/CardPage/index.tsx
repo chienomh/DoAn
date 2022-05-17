@@ -1,9 +1,12 @@
 import DeleteIcon from '@mui/icons-material/Delete';
 import RemoveIcon from '@mui/icons-material/Remove';
 import AddIcon from '@mui/icons-material/Add';
+import CloseIcon from '@mui/icons-material/Close';
 import {
   Button,
   Container,
+  Dialog,
+  Stack,
   Table,
   TableBody,
   TableCell,
@@ -22,11 +25,25 @@ import { selectBill } from './slice/selectors';
 import AlertShop from 'app/components/alert';
 import { useHistory } from 'react-router-dom';
 import { getCoupon } from 'server/billService';
+import { Label, Title, Wrapper } from './styled';
+import { ShopField } from 'app/components/ShopField';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useForm } from 'react-hook-form';
+import ShopButton from 'app/components/ShopButton';
 
 export default function CardPage() {
   const [dataCard, setDataCard] = useState<any>([]);
   const [coupon, setCoupon] = useState<string>('');
   const [percent, setPercent] = useState<any>();
+  const [open, setOpen] = useState<boolean>(false);
+
+  const dataUser = JSON.parse(localStorage.getItem('dataUserMember') || '');
+
+  const [name, setName] = useState<string>(dataUser.name);
+  const [phone, setPhone] = useState<string>(dataUser.phone);
+  const [email, setEmail] = useState<string>(dataUser.email);
+  const [address, setAddress] = useState<string>(dataUser.address);
 
   const dispatch = useDispatch();
 
@@ -78,10 +95,16 @@ export default function CardPage() {
   };
 
   const handleBuy = () => {
-    if (localStorage.getItem('userId')) {
-      const userId = JSON.parse(localStorage.getItem('userId') || '');
+    setOpen(true);
+  };
 
-      const params = {
+  const handleConfirmInfor = () => {
+    const userId = JSON.parse(localStorage.getItem('userIdMember') || '');
+
+    let params;
+
+    if (userId) {
+      params = {
         couponName: percent ? percent.name : '',
         discountPersent: percent ? percent.percent : 0,
         listBillProducts: dataCard.map(x => ({
@@ -94,23 +117,60 @@ export default function CardPage() {
           ? dataCard.reduce(
               (init, curr) => init + curr.quantity * curr.price,
               0,
+            ) -
+            dataCard.reduce(
+              (init, curr) => init + curr.quantity * curr.price,
+              0,
             ) *
-            (percent.percent / 100)
+              (percent.percent / 100)
           : dataCard.reduce(
               (init, curr) => init + curr.quantity * curr.price,
               0,
             ),
         userId: userId,
+        name,
+        phone,
+        email,
+        address,
       };
-
-      dispatch(actions.handleCreateBill(params));
-
-      dispatch(actions.handleCreateBillSuccess());
-
-      localStorage.setItem('card', '');
     } else {
-      history.push('/login');
+      params = {
+        couponName: percent ? percent.name : '',
+        discountPersent: percent ? percent.percent : 0,
+        listBillProducts: dataCard.map(x => ({
+          productId: x.id,
+          quantity: x.quantity,
+          sizeId: x.sizeId,
+        })),
+
+        priceTotal: percent
+          ? dataCard.reduce(
+              (init, curr) => init + curr.quantity * curr.price,
+              0,
+            ) -
+            dataCard.reduce(
+              (init, curr) => init + curr.quantity * curr.price,
+              0,
+            ) *
+              (percent.percent / 100)
+          : dataCard.reduce(
+              (init, curr) => init + curr.quantity * curr.price,
+              0,
+            ),
+        name,
+        phone,
+        email,
+        address,
+      };
     }
+
+    dispatch(actions.handleCreateBill(params));
+
+    dispatch(actions.handleCreateBillSuccess());
+
+    localStorage.setItem('card', '');
+
+    setOpen(false);
   };
 
   const changeCoupon = async e => {
@@ -118,6 +178,53 @@ export default function CardPage() {
     const data = await getCoupon(e.target.value);
     console.log(data.data);
     setPercent(data.data);
+  };
+
+  const handleClosePopup = () => {
+    setOpen(false);
+  };
+
+  const schema = yup.object({
+    name: yup.string().required('This field is is required'),
+    phone: yup.string().required('This field is is required'),
+    address: yup.string().required('This field is is required'),
+    email: yup.string().required('This field is is required'),
+  });
+
+  const form = useForm({
+    resolver: yupResolver(schema),
+    defaultValues: {
+      name: '',
+      phone: '',
+      address: '',
+      email: '',
+    },
+    mode: 'all',
+  });
+
+  useEffect(() => {
+    setValue('name', dataUser.name);
+    setValue('phone', dataUser.phone);
+    setValue('email', dataUser.email);
+    setValue('address', dataUser.address);
+  }, [dataUser]);
+
+  const { getValues, setValue } = form;
+
+  const handleChangeName = e => {
+    setName(e.target.value);
+  };
+
+  const handleChangePhone = e => {
+    setPhone(e.target.value);
+  };
+
+  const handleChangeEmail = e => {
+    setEmail(e.target.value);
+  };
+
+  const handleChangeAddress = e => {
+    setAddress(e.target.value);
   };
   return (
     <LayoutShop>
@@ -129,6 +236,84 @@ export default function CardPage() {
           onClose={() => dispatch(actions.CloseAlert())}
           handle={() => history.push('/')}
         />
+
+        <Dialog open={open} onClose={handleClosePopup} maxWidth="lg">
+          <Wrapper>
+            <Title>Confirm informationn</Title>
+            <CloseIcon
+              sx={{
+                position: 'absolute',
+                top: '20px',
+                right: '20px',
+                cursor: 'pointer',
+              }}
+              onClick={handleClosePopup}
+            />
+            <form onSubmit={form.handleSubmit(() => {})}>
+              <Box
+                sx={{
+                  width: '600px',
+                  padding: '30px',
+                  bgcolor: '#fff',
+                  borderRadius: '20px',
+                }}
+              >
+                <Box width="100%">
+                  <Label>Name</Label>
+                  <ShopField
+                    form={form}
+                    name="name"
+                    errorText={true}
+                    value={name}
+                    onGetText={handleChangeName}
+                  />
+                </Box>
+                <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3}>
+                  <Box sx={{ marginBottom: '20px', width: '100%' }}>
+                    <Label>Phone</Label>
+                    <ShopField
+                      form={form}
+                      name="phone"
+                      type="text"
+                      errorText={true}
+                      onGetText={handleChangePhone}
+                      value={phone}
+                    />
+                  </Box>
+                </Stack>
+                <Box sx={{ marginBottom: '20px', width: '100%' }}>
+                  <Label>Email</Label>
+                  <ShopField
+                    form={form}
+                    name="email"
+                    type="text"
+                    errorText={true}
+                    onGetText={handleChangeEmail}
+                    value={email}
+                  />
+                </Box>
+                <Box sx={{ marginBottom: '20px' }}>
+                  <Label>Address</Label>
+                  <ShopField
+                    form={form}
+                    name="address"
+                    type="text"
+                    errorText={true}
+                    onGetText={handleChangeAddress}
+                    value={address}
+                  />
+                </Box>
+
+                <ShopButton
+                  text="Confirm"
+                  sx={{ width: '100%' }}
+                  handleClick={handleConfirmInfor}
+                />
+              </Box>
+            </form>
+          </Wrapper>
+        </Dialog>
+
         {dataCard.length > 0 ? (
           <TableContainer>
             <Table>

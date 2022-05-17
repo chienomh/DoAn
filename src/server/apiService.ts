@@ -7,7 +7,7 @@ const apiClient = axios.create(config.api);
 // Request interceptor
 apiClient.interceptors.request.use(
   (config: any) => {
-    const accessToken = localStorage.getItem('access_token');
+    const accessToken = localStorage.getItem('access_token_member');
 
     if (accessToken) {
       config.headers.common.Authorization = `Bearer ${accessToken}`;
@@ -31,7 +31,7 @@ apiClient.interceptors.response.use(
   error => {
     // Clear local storage data and redirect to login page if request is 401 - Unauthorized
     if (error.response.status === 401) {
-      localStorage.setItem('access_token', '');
+      localStorage.setItem('access_token_member', '');
     }
 
     return Promise.reject(error);

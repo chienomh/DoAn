@@ -48,7 +48,7 @@ export default function ViewOders() {
 
   useEffect(() => {
     (async () => {
-      const id = JSON.parse(localStorage.getItem('userId') || '');
+      const id = JSON.parse(localStorage.getItem('userIdMember') || '');
       const dataBill = await getListBill(id);
       setListBill(dataBill.data.rows);
     })();
@@ -155,6 +155,12 @@ export default function ViewOders() {
                   Price Total
                 </TableCell>
                 <TableCell sx={{ fontWeight: 700 }} align="center">
+                  Shipper
+                </TableCell>
+                <TableCell sx={{ fontWeight: 700 }} align="center">
+                  Phone Shipper
+                </TableCell>
+                <TableCell sx={{ fontWeight: 700 }} align="center">
                   Status
                 </TableCell>
               </TableHead>
@@ -176,6 +182,12 @@ export default function ViewOders() {
                       </TableCell>
                       <TableCell sx={{ fontWeight: 700 }} align="center">
                         {x.priceTotal} $
+                      </TableCell>
+                      <TableCell sx={{ fontWeight: 700 }} align="center">
+                        {x.shipperName}
+                      </TableCell>
+                      <TableCell sx={{ fontWeight: 700 }} align="center">
+                        {x.shipperPhone}
                       </TableCell>
                       <TableCell sx={{ fontWeight: 700 }} align="center">
                         {

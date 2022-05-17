@@ -5,6 +5,7 @@ import ShopProduct from 'app/components/ShopProduct';
 import React, { useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import { Products } from './data';
 import { useSlice } from './slice';
 import { selectProduct } from './slice/selectors';
@@ -72,6 +73,25 @@ export default function MenPage() {
   const { actions } = useSlice();
 
   const { param, data } = useSelector(selectProduct);
+
+  useEffect(() => {
+    return () => {
+      dispatch(
+        actions.changeParams({
+          branch: -1,
+          color: -1,
+          gender: -1,
+          material: -1,
+          offset: -1,
+          pageNumber: -1,
+          pageSize: -1,
+          product_name: '',
+          style: -1,
+          technology: -1,
+        }),
+      );
+    };
+  }, []);
 
   useEffect(() => {
     dispatch(actions.getListProduct(param));
