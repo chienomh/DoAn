@@ -70,6 +70,7 @@ export default function HeaderShop() {
       }
       case '2': {
         history.push('/products');
+        // window.location.reload()
         break;
       }
       case '4': {
@@ -94,7 +95,7 @@ export default function HeaderShop() {
   const dispatch = useDispatch();
   const { actions } = useSlice();
 
-  const userId = localStorage.getItem('userId');
+  const userId = localStorage.getItem('userIdMember');
   useEffect(() => {
     (async () => {
       const data = await getDetailUser(userId);
@@ -104,8 +105,8 @@ export default function HeaderShop() {
   }, [userId]);
 
   const handleLogout = () => {
-    localStorage.removeItem('userId');
-    localStorage.setItem('access_token', '');
+    localStorage.removeItem('userIdMember');
+    localStorage.setItem('access_token_member', '');
     setUser('');
   };
 

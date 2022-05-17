@@ -19,8 +19,9 @@ function* handleRegister(action) {
 function* handleLogin(action) {
   try {
     const data = yield call(loginAPI, action.payload);
-    localStorage.setItem('access_token', data.data.accessToken);
-    localStorage.setItem('userId', data.data.userId);
+    localStorage.setItem('access_token_member', data.data.accessToken);
+    localStorage.setItem('userIdMember', data.data.userId);
+    localStorage.setItem('dataUserMember', JSON.stringify(data.data));
     // const inforUser = yield call(getDetailUser, data.data.userId);
     yield put(ActionsAuthent.loginSuccess(data.data));
   } catch (error) {

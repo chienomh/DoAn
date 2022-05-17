@@ -33,6 +33,21 @@ const slice = createSlice({
     changeParams(state, action: PayloadAction<any>) {
       state.param = action.payload;
     },
+
+    resetParams(state) {
+      state.param = {
+        branch: -1,
+        color: -1,
+        gender: -1,
+        material: -1,
+        offset: -1,
+        pageNumber: -1,
+        pageSize: -1,
+        product_name: '',
+        style: -1,
+        technology: -1,
+      };
+    },
   },
 });
 

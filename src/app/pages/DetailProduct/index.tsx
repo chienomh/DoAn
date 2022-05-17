@@ -163,7 +163,7 @@ export default function DetailPage() {
   };
 
   const handleCreatReview = () => {
-    if (localStorage.getItem('userId')) {
+    if (localStorage.getItem('userIdMember')) {
       setOpenBoxReview(true);
     } else {
       history.push('/login');
