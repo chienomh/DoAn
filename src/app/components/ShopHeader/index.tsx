@@ -107,6 +107,7 @@ export default function HeaderShop() {
   const handleLogout = () => {
     localStorage.removeItem('userIdMember');
     localStorage.setItem('access_token_member', '');
+    localStorage.removeItem('dataUserMember');
     setUser('');
   };
 

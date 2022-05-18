@@ -1,6 +1,6 @@
 import apiClient from './apiService';
 
-export const createBill = params => apiClient.post(`/member/buy`, params);
+export const createBill = params => apiClient.post(`/buy`, params);
 
 export const getListBill = params =>
   apiClient.get(`/member/bill/${params}?sort=0`);

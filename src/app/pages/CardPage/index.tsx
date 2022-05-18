@@ -38,7 +38,9 @@ export default function CardPage() {
   const [percent, setPercent] = useState<any>();
   const [open, setOpen] = useState<boolean>(false);
 
-  const dataUser = JSON.parse(localStorage.getItem('dataUserMember') || '');
+  const dataUser = localStorage.getItem('dataUserMember')
+    ? JSON.parse(localStorage.getItem('dataUserMember') || '')
+    : { name: '', phone: '', email: '', address: '' };
 
   const [name, setName] = useState<string>(dataUser.name);
   const [phone, setPhone] = useState<string>(dataUser.phone);
@@ -99,7 +101,9 @@ export default function CardPage() {
   };
 
   const handleConfirmInfor = () => {
-    const userId = JSON.parse(localStorage.getItem('userIdMember') || '');
+    const userId = localStorage.getItem('userIdMember')
+      ? JSON.parse(localStorage.getItem('userIdMember') || '')
+      : '';
 
     let params;
 
@@ -134,6 +138,8 @@ export default function CardPage() {
         address,
       };
     } else {
+      console.log('first');
+
       params = {
         couponName: percent ? percent.name : '',
         discountPersent: percent ? percent.percent : 0,
@@ -185,10 +191,10 @@ export default function CardPage() {
   };
 
   const schema = yup.object({
-    name: yup.string().required('This field is is required'),
-    phone: yup.string().required('This field is is required'),
-    address: yup.string().required('This field is is required'),
-    email: yup.string().required('This field is is required'),
+    // name: yup.string().required('This field is is required'),
+    // phone: yup.string().required('This field is is required'),
+    // address: yup.string().required('This field is is required'),
+    // email: yup.string().required('This field is is required'),
   });
 
   const form = useForm({
@@ -213,6 +219,7 @@ export default function CardPage() {
 
   const handleChangeName = e => {
     setName(e.target.value);
+    // setValue('name', e.target.value);
   };
 
   const handleChangePhone = e => {
