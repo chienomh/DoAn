@@ -329,7 +329,7 @@ export default function CardPage() {
                 <TableCell align="center">Name</TableCell>
                 <TableCell align="center">Image</TableCell>
                 <TableCell align="center">price of 1 product</TableCell>
-                <TableCell align="center">Quantity</TableCell>
+                <TableCell align="center">Số lượng</TableCell>
                 <TableCell align="center">Total Price</TableCell>
                 <TableCell align="center">Action</TableCell>
               </TableHead>

@@ -141,7 +141,6 @@ export default function MenPage() {
   };
 
   const handleChangeStyle = value => {
-    // setStyle(value);
     if (style === value) {
       setStyle(-1);
 
@@ -158,8 +157,6 @@ export default function MenPage() {
   };
 
   const handleChangeTechnology = value => {
-    // setTechnology(value);
-
     if (technology === value) {
       setTechnology(-1);
 
@@ -176,8 +173,6 @@ export default function MenPage() {
   };
 
   const handleChangeColor = value => {
-    // setColor(value);
-
     if (color === value) {
       setColor(-1);
 
@@ -194,8 +189,6 @@ export default function MenPage() {
   };
 
   const handleChangeGender = value => {
-    // setGender(value);
-
     if (gender === value) {
       setGender(-1);
 
@@ -226,7 +219,7 @@ export default function MenPage() {
           All products
         </Box>
         <Container sx={{ marginBottom: '100px' }}>
-          <Grid container spacing={2}>
+          <Grid container spacing={4}>
             <Grid item xs={3}>
               <WrapperFilter>
                 <TitleFilter>Branch</TitleFilter>
@@ -309,7 +302,7 @@ export default function MenPage() {
                 </Box>
               </WrapperFilter>
             </Grid>
-            <Grid container item xs={9} spacing={3}>
+            <Grid container item xs={9} spacing={5}>
               {data.map(x => (
                 <ShopProduct
                   link={x.image}

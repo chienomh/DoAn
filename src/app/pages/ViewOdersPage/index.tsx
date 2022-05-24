@@ -1,4 +1,5 @@
 import {
+  Button,
   Container,
   Dialog,
   Table,
@@ -7,11 +8,12 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TextField,
 } from '@mui/material';
 import LayoutShop from 'app/components/ShopLayout';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { getBillDetail, getListBill } from 'server/billService';
+import { getBillByPhone, getBillDetail, getListBill } from 'server/billService';
 import { selectAuthent } from '../authentication/slice/selectors';
 import moment from 'moment';
 import { Box } from '@mui/system';
@@ -22,6 +24,8 @@ export default function ViewOders() {
   const [id, setId] = useState<number>(0);
   const [openPopup, setOpenPopup] = useState<boolean>(false);
   const [dataDetail, setDataDetail] = useState<any>([]);
+
+  const [phone, setPhone] = useState<string>('');
 
   const valuesStatus = [
     {
@@ -68,6 +72,19 @@ export default function ViewOders() {
 
   const handleClose = () => {
     setOpenPopup(false);
+  };
+
+  const changePhone = e => {
+    setPhone(e.target.value);
+  };
+
+  const handleSearchBill = async () => {
+    try {
+      const data = await getBillByPhone(phone);
+      setListBill(data.data.rows);
+    } catch (error) {
+      setListBill([]);
+    }
   };
   return (
     <LayoutShop>
@@ -136,7 +153,23 @@ export default function ViewOders() {
             </TableContainer>
           </Box>
         </Dialog>
-        <Box sx={{ backgroundColor: '#fff', borderRadius: '30px' }}>
+        <Box sx={{ borderRadius: '30px' }}>
+          <Box
+            textAlign="right"
+            marginTop="50px"
+            display="flex"
+            alignItems="center"
+          >
+            <TextField
+              placeholder="Phone"
+              sx={{ marginRight: '20px' }}
+              value={phone}
+              onChange={changePhone}
+            />
+            <Button variant="contained" onClick={handleSearchBill}>
+              Search
+            </Button>
+          </Box>
           <TableContainer sx={{ marginTop: '50px', borderRadius: '30px' }}>
             <Table>
               <TableHead
