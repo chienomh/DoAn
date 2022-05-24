@@ -154,6 +154,10 @@ export default function HeaderShop() {
   const goViewOders = () => {
     history.push('/view-oders');
   };
+
+  const handleSearchBill = () => {
+    history.push(`/view-oders`);
+  };
   return (
     <Box>
       <Box
@@ -226,6 +230,7 @@ export default function HeaderShop() {
           {!user && path !== '/register' && (
             <ShopButton text="Register" handleClick={handleGoRegister} />
           )}
+          <ShopButton text="Search Bill" handleClick={handleSearchBill} />
           {user && (
             <div>
               <img

@@ -6,10 +6,16 @@ import bg2 from './assets/img_bg_2.jpg';
 import bg3 from './assets/img_bg_3.jpg';
 import ShopButton from 'app/components/ShopButton';
 import styled, { keyframes } from 'styled-components';
+import { useHistory } from 'react-router-dom';
 
 const arrBg = [bg1, bg2, bg3];
 
 export default function SlideShow() {
+  const history = useHistory();
+
+  const goProducts = () => {
+    history.push('/products');
+  };
   return (
     <Box height="500px">
       <Splide
@@ -49,7 +55,10 @@ export default function SlideShow() {
                     UP TO <span style={{ fontWeight: '700' }}>30%</span> OFF
                   </Box>
                   <Box marginBottom="20px">New Stylish shoes for men</Box>
-                  <ShopButton text="SHOP COLLECTION"></ShopButton>
+                  <ShopButton
+                    text="SHOP COLLECTION"
+                    handleClick={goProducts}
+                  ></ShopButton>
                 </TextBg>
               </Box>
               <img

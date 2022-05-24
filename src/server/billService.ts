@@ -9,3 +9,5 @@ export const getBillDetail = params =>
   apiClient.get(`/member/bill/detail/${params}?sort=0`);
 
 export const getCoupon = params => apiClient.get(`/coupon/${params}`);
+
+export const getBillByPhone = phone => apiClient.get(`/bill/${phone}`);
